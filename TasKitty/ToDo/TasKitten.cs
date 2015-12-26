@@ -35,6 +35,8 @@ namespace TasKitten
 
         public bool Completed { get; set; }
 
+        public SortedSet<DateTime> Reminders;
+
         #endregion
 
         #region ctors
@@ -43,6 +45,7 @@ namespace TasKitten
             this.myTask = myTask;
             this.Repeats = RepetitionType.None;
             this.repeatInterval = Repetition.EmptyInterval;
+            this.Reminders = new SortedSet<DateTime>();
         }
 
         public TasKitten(ToDoItem myTask, RepetitionType repeats): this(myTask)
@@ -67,9 +70,52 @@ namespace TasKitten
 
         #region methods
 
+        private DateTime getNextInstance(DateTime lastInstance)
+        {
+            if (this.Repeats == RepetitionType.None)
+            {
+                throw new NotSupportedException("This is a one-time item.");
+            }
+
+            DateTime nextInstance;
+
+            switch (this.Repeats)
+            {
+                case RepetitionType.Monthly:
+                    nextInstance = lastInstance.AddMonths(1);
+                    break;
+                case RepetitionType.Bimonthly:
+                    nextInstance = lastInstance.AddMonths(2);
+                    break;
+                case RepetitionType.Yearly:
+                    nextInstance = lastInstance.AddYears(1);
+                    break;
+                default:
+                    nextInstance = lastInstance.Add(this.repeatInterval);
+                    break;
+            }
+
+            return nextInstance;
+        }
+        
+        private void updateReminders()
+        {
+            if(Reminders.Count > 0)
+            {
+                SortedSet<DateTime> newList = new SortedSet<DateTime>();
+                foreach (DateTime reminder in Reminders)
+                {
+                    newList.Add(getNextInstance(reminder));
+                }
+
+                Reminders.Clear();
+                Reminders = newList; 
+            }
+        }
+
         public bool isPastDeadline()
         {
-            return DateTime.Compare(myTask.Deadline, DateTime.Now) > 0;
+            return myTask.Deadline.CompareTo(DateTime.Now) >= 0;
         }
 
         public bool isOverdue()
@@ -79,31 +125,9 @@ namespace TasKitten
 
         public void Repeat()
         {
-            if(this.Repeats == RepetitionType.None)
-            {
-                throw new NotSupportedException("This is a one-time item.");
-            }
-
-            DateTime newDeadline;
-
-            switch(this.Repeats)
-            {
-                case RepetitionType.Monthly:
-                    newDeadline = myTask.Deadline.AddMonths(1);
-                    break;
-                case RepetitionType.Bimonthly:
-                    newDeadline = myTask.Deadline.AddMonths(2);
-                    break;
-                case RepetitionType.Yearly:
-                    newDeadline = myTask.Deadline.AddYears(1);
-                    break;
-                default:
-                    newDeadline = myTask.Deadline.Add(this.repeatInterval);
-                    break;
-            }
-
-            myTask.Deadline = newDeadline;
+            myTask.Deadline = getNextInstance(myTask.Deadline);
             Completed = false;
+            updateReminders();
         }
 
         public void ChangeRepetition(TimeSpan repeatInterval)

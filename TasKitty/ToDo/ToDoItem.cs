@@ -79,7 +79,7 @@ namespace TasKitten
 
         public override string ToString()
         {
-            //TODO: figure out datetime representation 
+            // TODO: figure out datetime representation 
             return this.title + ": " + this.desc + Environment.NewLine /*+ "Due at: " + this.due.ToString()*/;
         }
 
