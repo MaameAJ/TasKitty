@@ -7,7 +7,7 @@
     <ProjectGuid>{42B06E66-67A6-45D3-9CF8-A18D2E2ECCA9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ToDo</RootNamespace>
+    <RootNamespace>TasKitten</RootNamespace>
     <AssemblyName>ToDo</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -41,8 +41,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repetition.cs" />
-    <Compile Include="Task.cs" />
     <Compile Include="ToDoItem.cs" />
+    <Compile Include="TasKitten.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

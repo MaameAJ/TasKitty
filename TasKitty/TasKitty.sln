@@ -5,7 +5,7 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasKitty", "TasKitty\TasKitty.csproj", "{E04D32A6-6F00-44F3-B285-5F833FEB66C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDo", "ToDo\ToDo.csproj", "{42B06E66-67A6-45D3-9CF8-A18D2E2ECCA9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TasKitten", "ToDo\TasKitten.csproj", "{42B06E66-67A6-45D3-9CF8-A18D2E2ECCA9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

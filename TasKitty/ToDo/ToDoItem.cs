@@ -2,130 +2,61 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace ToDo
+namespace TasKitten
 {
-   
-    class ToDoItem
+    public class ToDoItem
     {
-        #region class members
-        private Task myTask;
-        private TimeSpan repeatInterval;
+        private string title;
+        private string desc;
+        private DateTime due;
 
-        public String Title
-        {
-            get { return myTask.Title; }
-            set { myTask.Title = value; }
-        }
+	    public String Title
+	    {
+		    get { return title;}
+		    set { title = value;}
+	    }
 
         public String Description
         {
-            get { return myTask.Description; }
-            set { myTask.Description = value; }
+            get { return desc; }
+            set { desc = value; }
         }
 
         public DateTime Deadline
         {
-            get { return myTask.Deadline; }
-            set { myTask.Deadline = value; }
+            get { return due; }
+            set { due = value; }
         }
 
-        public RepetitionType Repeats { get; private set; }
-
-        public bool Completed { get; set; }
-
-        #endregion
-
-        #region ctors
-        public ToDoItem(Task myTask)
+        public ToDoItem(string title, string desc, DateTime due)
         {
-            this.myTask = myTask;
-            this.Repeats = RepetitionType.None;
-            this.repeatInterval = Repetition.EmptyInterval;
-        }
-
-        public ToDoItem(Task myTask, RepetitionType repeats): this(myTask)
-        {
-            if(repeats == RepetitionType.Special)
+            if(title == String.Empty && desc == String.Empty)
             {
-                throw new ArgumentException("Need to set RepeatInterval with Special Repetition Type.");
+                throw new ArgumentException("Either title or desc must be provided.");
+            }
+            else if(due == null)
+            {
+                throw new ArgumentNullException("due cannot be null");
             }
             else
             {
-                this.Repeats = repeats;
-                this.repeatInterval = Repetition.GetTimeSpan(repeats);
+                this.title = title;
+                this.desc = desc;
+                this.due = due;
             }
         }
 
-        public ToDoItem(Task myTask, TimeSpan repeatInterval): this(myTask)
-        {
-            this.Repeats = Repetition.GetRepetitionType(repeatInterval);
-            this.repeatInterval = repeatInterval; 
-        }
-        #endregion
+        //copy constructor
+        public ToDoItem(ToDoItem toCopy):this(toCopy.title, toCopy.desc, toCopy.due) { }
 
-        #region methods
-
-        public bool isPastDeadline()
+        //constructor for repetitive tasks
+        public ToDoItem(ToDoItem original, TimeSpan addToOrgDeadline)
+            : this(original)
         {
-            return DateTime.Compare(myTask.Deadline, DateTime.Now) > 0;
+            this.due.Add(addToOrgDeadline);
         }
 
-        public bool isOverdue()
-        {
-            return !Completed && isPastDeadline();
-        }
-
-        public void Repeat()
-        {
-            if(this.Repeats == RepetitionType.None)
-            {
-                throw new NotSupportedException("This is a one-time item.");
-            }
-
-            DateTime newDeadline;
-
-            switch(this.Repeats)
-            {
-                case RepetitionType.Monthly:
-                    newDeadline = myTask.Deadline.AddMonths(1);
-                    break;
-                case RepetitionType.Bimonthly:
-                    newDeadline = myTask.Deadline.AddMonths(2);
-                    break;
-                case RepetitionType.Yearly:
-                    newDeadline = myTask.Deadline.AddYears(1);
-                    break;
-                default:
-                    newDeadline = myTask.Deadline.Add(this.repeatInterval);
-                    break;
-            }
-
-            myTask.Deadline = newDeadline;
-            Completed = false;
-        }
-
-        public void ChangeRepetition(TimeSpan repeatInterval)
-        {
-            this.Repeats = Repetition.GetRepetitionType(repeatInterval);
-            this.repeatInterval = repeatInterval; 
-        }
-
-        public void ChangeRepetition(RepetitionType repeats)
-        {
-            if (repeats == RepetitionType.Special)
-            {
-                throw new ArgumentException("Need to set RepeatInterval with Special Repetition Type.");
-            }
-            else
-            {
-                this.Repeats = repeats;
-                this.repeatInterval = Repetition.GetTimeSpan(repeats);
-            }
-        }
-
-        #region overridden methods
         // override object.Equals
         public override bool Equals(object obj)
         {
@@ -135,8 +66,7 @@ namespace ToDo
             }
 
             ToDoItem other = (ToDoItem)obj;
-
-            return this.myTask.Equals(other.myTask) && this.repeatInterval.Equals(other.repeatInterval) && this.Repeats == other.Repeats && this.Completed == other.Completed;
+            return (String.Equals(this.title, other.title) && String.Equals(this.desc, other.desc) && DateTime.Equals(this.due, other.due));
         }
 
         // override object.GetHashCode
@@ -147,8 +77,16 @@ namespace ToDo
             return base.GetHashCode();
         }
 
-        #endregion
+        public override string ToString()
+        {
+            //TODO: figure out datetime representation 
+            return this.title + ": " + this.desc + Environment.NewLine /*+ "Due at: " + this.due.ToString()*/;
+        }
 
-        #endregion
+        public ToDoItem Copy(ToDoItem toCopy)
+        {
+            return new ToDoItem(toCopy);
+        }
+	
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ToDo
+namespace TasKitten
 {
     enum RepetitionType { None, Hourly, Daily, Weekly, Biweekly, Monthly, Bimonthly, Yearly, Special }
 
